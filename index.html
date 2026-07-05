@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Zeev's Toolbox</title>
+<style>
+  :root{
+    --bg:#f6f7fb; --panel:#ffffff; --text:#171a21; --muted:#6b7280;
+    --border:#e6e8ef; --accent:#6d5efc; --accent-soft:#eeecff;
+    --badge-bg:#f1f2f7; --badge-text:#4b5563; --shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px rgba(16,24,40,.06);
+    --ok:#12a150;
+  }
+  html[data-theme="dark"]{
+    --bg:#0e1016; --panel:#171a22; --text:#e9ebf2; --muted:#9aa2b1;
+    --border:#252a35; --accent:#8b7dff; --accent-soft:#221f3a;
+    --badge-bg:#20242e; --badge-text:#aab2c0; --shadow:0 1px 2px rgba(0,0,0,.3),0 12px 30px rgba(0,0,0,.35);
+    --ok:#3ddc84;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,system-ui,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.5;-webkit-font-smoothing:antialiased;}
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:20;backdrop-filter:saturate(1.2) blur(8px);
+    background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)}
+  .topbar{display:flex;align-items:center;gap:14px;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .logo{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;font-size:20px;
+    background:var(--accent-soft);flex:none}
+  .brand h1{font-size:18px;margin:0;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+  .brand p{margin:0;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .spacer{flex:1}
+  .iconbtn{border:1px solid var(--border);background:var(--panel);color:var(--text);
+    height:38px;border-radius:10px;padding:0 12px;font-size:14px;font-weight:600;cursor:pointer;
+    display:inline-flex;align-items:center;gap:7px;transition:.15s}
+  .iconbtn:hover{border-color:var(--accent);color:var(--accent)}
+
+  nav.tabs{display:flex;gap:6px;padding:6px 0 0}
+  .tab{border:none;background:none;color:var(--muted);font-size:15px;font-weight:600;cursor:pointer;
+    padding:10px 4px;margin:0 12px 0 0;border-bottom:2px solid transparent;transition:.15s}
+  html[dir="rtl"] .tab{margin:0 0 0 12px}
+  .tab.active{color:var(--text);border-bottom-color:var(--accent)}
+  .tab .count{color:var(--muted);font-weight:600;font-size:12px}
+
+  main{padding:26px 0 60px}
+  .lead{color:var(--muted);font-size:14.5px;margin:0 0 20px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:.18s}
+  .card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+  .card-head{display:flex;gap:12px;align-items:flex-start}
+  .emoji{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;
+    font-size:22px;flex:none}
+  .card-title{min-width:0}
+  .card-title h3{margin:0;font-size:16.5px;font-weight:700;letter-spacing:-.01em}
+  .card-title .alt{font-size:12.5px;color:var(--muted);margin-top:1px}
+  .desc{font-size:14px;color:var(--text);opacity:.92;margin:0}
+  .badges{display:flex;flex-wrap:wrap;gap:6px}
+  .badge{font-size:11.5px;font-weight:600;color:var(--badge-text);background:var(--badge-bg);
+    border-radius:999px;padding:3px 10px}
+  .badge.lock{background:color-mix(in srgb,#f59e0b 15%,var(--badge-bg));color:#b45309}
+  .card-actions{display:flex;gap:8px;margin-top:auto;flex-wrap:wrap}
+  .btn{flex:1;min-width:120px;border-radius:10px;padding:9px 12px;font-size:13.5px;font-weight:600;
+    cursor:pointer;border:1px solid var(--border);background:var(--panel);color:var(--text);
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:.15s;text-decoration:none}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary:hover{filter:brightness(1.05)}
+  .btn.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+
+  details.steps{border-top:1px solid var(--border);padding-top:10px;margin-top:2px}
+  details.steps summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);list-style:none}
+  details.steps summary::-webkit-details-marker{display:none}
+  details.steps pre{white-space:pre-wrap;font-size:12px;line-height:1.6;color:var(--text);
+    background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin:10px 0 0;
+    max-height:280px;overflow:auto;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;direction:rtl;text-align:right}
+
+  /* repos */
+  .repos-bar{display:flex;gap:10px;align-items:center;margin:0 0 18px;flex-wrap:wrap}
+  .search{flex:1;min-width:220px;border:1px solid var(--border);background:var(--panel);color:var(--text);
+    height:40px;border-radius:11px;padding:0 14px;font-size:14px;outline:none}
+  .search:focus{border-color:var(--accent)}
+  .select{border:1px solid var(--border);background:var(--panel);color:var(--text);height:40px;
+    border-radius:11px;padding:0 12px;font-size:13.5px;font-weight:600;cursor:pointer}
+  .repo{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:9px;transition:.18s}
+  .repo:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+  .repo h3{margin:0;font-size:15.5px;font-weight:700}
+  .repo h3 a:hover{color:var(--accent)}
+  .repo .rdesc{font-size:13.5px;color:var(--muted);margin:0;flex:1}
+  .repo-meta{display:flex;align-items:center;gap:14px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+  .lang{display:inline-flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:50%;background:#8b8b8b;flex:none}
+  .state{text-align:center;color:var(--muted);padding:50px 0;font-size:14.5px}
+  .skel{background:var(--panel);border:1px solid var(--border);border-radius:14px;height:120px;
+    position:relative;overflow:hidden}
+  .skel::after{content:"";position:absolute;inset:0;transform:translateX(-100%);
+    background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--text) 6%,transparent),transparent);
+    animation:sh 1.2s infinite}
+  @keyframes sh{100%{transform:translateX(100%)}}
+
+  footer{border-top:1px solid var(--border);padding:22px 0;color:var(--muted);font-size:12.5px;text-align:center}
+  .hidden{display:none!important}
+  @media(max-width:560px){.brand p{display:none}.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🧰</div>
+        <div>
+          <h1 data-i18n="title">Zeev's Toolbox</h1>
+          <p data-i18n="subtitle">Tools I install &amp; my repositories</p>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <button class="iconbtn" id="langBtn" title="Switch language">🌐 <span id="langLabel">עברית</span></button>
+      <button class="iconbtn" id="themeBtn" title="Toggle theme">🌙</button>
+    </div>
+    <nav class="tabs">
+      <button class="tab active" data-tab="tools"><span data-i18n="tabTools">Tools</span> <span class="count" id="toolCount"></span></button>
+      <button class="tab" data-tab="repos"><span data-i18n="tabRepos">Repositories</span> <span class="count" id="repoCount"></span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- TOOLS -->
+  <section id="tools">
+    <p class="lead" data-i18n="toolsLead">Everything I install on a fresh machine. Each card links to its repo and copies the exact prompt to paste into Claude Code.</p>
+    <div class="grid" id="toolGrid"></div>
+  </section>
+
+  <!-- REPOS -->
+  <section id="repos" class="hidden">
+    <p class="lead" data-i18n="reposLead">All my public GitHub repositories, live from the GitHub API — always up to date.</p>
+    <div class="repos-bar">
+      <input class="search" id="repoSearch" data-i18n-ph="searchPh" placeholder="Search repositories…" />
+      <select class="select" id="repoSort">
+        <option value="updated" data-i18n="sortUpdated">Recently updated</option>
+        <option value="name" data-i18n="sortName">Name (A–Z)</option>
+        <option value="stars" data-i18n="sortStars">Most stars</option>
+      </select>
+    </div>
+    <div class="grid" id="repoGrid"></div>
+    <div class="state hidden" id="repoState"></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <span data-i18n="footer">Built with Claude Code · data pulled live from GitHub</span> ·
+  <a href="https://github.com/Zeev-L" target="_blank" rel="noopener">github.com/Zeev-L</a>
+</footer>
+
+<!-- Install prompts (raw text, read by JS; nothing escaped) -->
+<textarea id="p-claude-config" hidden>אני מתחיל לעבוד במחשב חדש / חשבון Claude חדש, ורוצה לשחזר את כל סביבת ה-Claude Code שלי.
+מקור האמת שלי הוא ה-repo הפרטי: github.com/Zeev-L/claude-config
+
+בצע לפי הסדר, ועצור לבקש ממני רק צעדים שדורשים אותי (אדם):
+
+1. ודא ש-git, gh (GitHub CLI) ו-Claude Code מותקנים. אם gh לא מחובר — בקש ממני להריץ `gh auth login` ולהתחבר בדפדפן כ-Zeev-L.
+
+2. שכפל את ה-repo לנתיב המדויק (הנתיב חשוב — ה-@import תלוי בו):
+   git clone https://github.com/Zeev-L/claude-config.git ~/.claude/repos/claude-config
+
+3. הרץ:  bash ~/.claude/repos/claude-config/bootstrap.sh
+   (משחזר: הנחיות גלובליות + settings + הרשאות allowlist + skills + הזיכרון שלי, ומחבר את ה-symlinks. idempotent — בטוח להריץ שוב.)
+
+4. קרא את ~/.claude/repos/claude-config/NEW-MACHINE-SETUP.md ובצע את מה שנשאר לפיו.
+
+5. הצג לי במפורש רק את הצעדים הידניים שאתה לא יכול לבצע:
+   פרויקט Cowork ופרויקט Claude.ai — הדבקת chat-instructions.txt.
+
+6. שאל אותי אילו פרויקטים אני עומד לעבוד עליהם, שכפל אותם מ-github.com/Zeev-L,
+   הוסף את הנתיבים ל-projects.list, והרץ שוב את bootstrap.sh.
+
+7. אמת שהכל עבד:  ls -l ~/.claude/CLAUDE.md ; head -4 ~/.claude/CLAUDE.md ; ls ~/.claude/projects/*/memory/*.md
+   ואז בקש ממני להפעיל מחדש את הסשן כדי שההנחיות וה-skills ייטענו.
+
+הקשר: ההנחיות האישיות שלי (core-instructions) ייטענו אוטומטית אחרי bootstrap, אז מרגע זה עבוד לפיהן.</textarea>
+
+<textarea id="p-claude-hebrew-support" hidden>קיבלתי פתרון פתוח שמסדר את העברית/ערבית ב-Claude שתופיע נכון מימין לשמאל — גם באפליקציית הדסקטופ וגם ב-claude.ai בכרום. אני על Mac.
+תתקין לי את זה לפי הריפו וה-README שלו: https://github.com/Zeev-L/claude-hebrew-support
+
+בבקשה:
+
+1. קרא קודם את ה-README של הריפו (הוראות מלאות צעד-צעד — אנגלית למעלה, עברית בתחתית), ואז עקוב אחריו. הסבר לי כל פקודה בשפה פשוטה לפני שאתה מריץ.
+
+2. בדוק דרישות מקדימות ותקן מה שחסר:
+   - ש-Claude Desktop מותקן ושאני מחובר אליו (הגרסה המתוקנת חולקת איתו את ההתחברות והצ'אטים). אם לא — תגיד לי להתקין ולהתחבר קודם.
+   - ש-Node.js מותקן (node -v). אם חסר — התקן עם brew install node (התקן Homebrew קודם אם צריך).
+
+3. התקנת דסקטופ: שכפל את הריפו והרץ desktop-mac/patch.sh --install.
+   לפני ההרצה הסבר שזה בטוח — זה עובד על *עותק* בשם "Claude-RTL", לא נוגע ב-Claude המקורי, ומאפשר ל-macOS להריץ את העותק המתוקן.
+   - בסוף הסקריפט עשוי להציע להתקין "תזכורת עדכון" — שאל אותי אם אני רוצה, ואם כן אשר.
+
+4. חלק ה-web (claude.ai בכרום): את הצעדים האלה אתה לא יכול לעשות בשבילי, אז הדרך אותי לחיצה-לחיצה וחכה לי בכל שלב:
+   - להתקין את התוסף Tampermonkey מחנות התוספים של Chrome.
+   - להתקין את הסקריפט מהקובץ web/claude-rtl.user.js (פתח את ה-raw URL, ו-Tampermonkey יציע Install).
+   - קריטי: להדליק "Developer mode" ב-chrome://extensions — בלי זה הסקריפט לא ירוץ.
+   - לרענן את claude.ai.
+
+5. macOS עשוי לבקש פעם אחת גישה ל-Desktop ומפתח Keychain ("Claude Safe Storage") — תגיד לי מתי לצפות לזה, ואני אלחץ Allow / Always Allow.
+
+חשוב: עצור ושאל אותי לפני כל דבר שדורש ידיים שלי (תוסף לדפדפן, הגדרות Chrome, חלונות הרשאה של macOS). בסיום — ודא שעברית מיושרת לימין גם באפליקציה (Claude-RTL) וגם ב-claude.ai, ושבלוקי קוד נשארים משמאל לימין.</textarea>
+
+<textarea id="p-the-mic" hidden>אני רוצה להתקין אצלי את "מיק" — מנהל משימות שהופך מיילים והזנות ישירות לטבלת משימות חיה ב-Google Sheets, עם לוח Web App (לוח/רשימה/Roadmap), צביעה, מייל סיכום יומי, וכפתור "הוסף אירוע ליומן". עקוב אחרי ה-Runbook המלא ב-README של github.com/Zeev-L/the-mic.
+
+קודם שאל אותי את 4 השאלות האלה, וחכה לתשובות:
+1. האם מותקן ומחובר אצלי התוסף "Claude in Chrome", ואני מחובר ב-Chrome לחשבון ה-Google הנכון (זה שעליו מיק ייווצר)?
+2. אני על Mac או Windows/Linux? (חשוב רק לצעד לכידת-הדסקטופ.)
+3. שפת האפליקציה — עברית או אנגלית?
+4. איך אזין משימות — גם דרך מייל-לעצמי (ואז נגדיר תגית + פילטר ב-Gmail), או רק הזנה ישירה בלוח / בבר / בטרמינל (ואז נדלג על הגדרת ה-Gmail)?
+
+אחרי שאענה, בצע את ההתקנה:
+- אם "Claude in Chrome" מחובר ועובד — בצע דרך הדפדפן. אם הוא חסום או לא זמין — עבור אוטומטית ל"מסלול clasp" מהטרמינל שמתואר ב-README (התקנת clasp, login, יצירת פרויקט מקושר, push, ופריסה). בשני המקרים הכן את כל הקוד בעצמך.
+- בצע: יצירת Google Sheet + Apps Script מקושר; התקנת הקוד (Code.gs מהקובץ syncGmailToSheets.TXT + קובץ HTML בשם WebApp מהקובץ WebApp.html); סנכרון/אתחול ראשון; ושתי פריסות Web App — UI ב-"Only myself" (זו כתובת הלוח) ו-webhook ב-"Anyone, even anonymous" (הכתובת הסודית ללכידה מהדסקטופ).
+- אם בחרתי אנגלית — קבע Script Property בשם APP_LANG בערך en.
+- אם בחרתי גם מייל — הנחה אותי ליצור תגית MyTasks ופילטר from:me to:me -{cc:me bcc:me} (Skip Inbox + Apply label). אל תחיל את הפילטר אחורנית.
+- כדי להפעיל את כפתור "הוסף אירוע ליומן" בלוח — הנחה אותי להריץ פעם אחת בתפריט הגיליון: ניהול משימות → אשר גישה ליומן, ולאשר את הרשאת ה-Calendar.
+- לכידה מהדסקטופ (Mac/Linux בלבד): הרץ ./desktop/install.sh ומלא את ~/.mik/config בשתי הכתובות. ב-Windows דלג.
+
+עצור רק בצעדים שחייבים אותי: אישורי OAuth ואישורי-קליק קצרים. את כל השאר בצע אוטונומית. אל תדפיס בצ'אט את כתובת ה-webhook הסודית — כתוב אותה ישירות ל-~/.mik/config.</textarea>
+
+<textarea id="p-claude-status-monitor" hidden>אני רוצה להתקין כלי קטן בשם "Claude Code Status Monitor" שמראה ב-menu bar של ה-Mac את הסטטוס של כל סשן Claude Code שרץ במקביל (אדום=עובד · כתום=ממתין לאישור · ירוק=סיים), ולחיצה על סשן קופצת לחלון שלו. הקוד הציבורי: https://github.com/Zeev-L/claude-status-monitor
+
+בבקשה התקן לי אותו, והסבר לי כל צעד בפשטות (אני לא מתכנת):
+
+1. ודא שאני על macOS, ושיש /usr/bin/python3. אם חסר — הדרך אותי להתקין Command Line Tools.
+2. בדוק אם מותקן Homebrew. אם לא — הסבר מה זה ושאל אותי לפני שמתקינים.
+3. שכפל (git clone) את ה-repo לתיקייה קבועה (בתיקיית הבית, לא זמנית), והרץ את install.sh שבתוכו.
+4. הסבר בקצרה מה הסקריפט עושה: מוסיף "hooks" ל-~/.claude/settings.json (עם גיבוי), ומתקין אפליקציה קטנה בשם SwiftBar שמציירת את הנקודות.
+5. חשוב מאוד — הרשאת Accessibility:
+   • הדרך אותי: System Settings → Privacy & Security → Accessibility → הוסף את "SwiftBar" והדלק.
+   • ואז הנחה אותי לצאת מ-SwiftBar ולפתוח אותו מחדש — בלי האתחול ההרשאה לא נכנסת לתוקף.
+   • בלי זה, לחיצה על סשן רק מביאה את האפליקציה לקדמה ולא קופצת לחלון המדויק.
+6. בסוף: ודא ש-SwiftBar רץ, תגיד לי איפה להסתכל (למעלה מימין), ובדוק איתי שלחיצה על סשן באמת קופצת לחלון הנכון.
+
+הערה: macOS בלבד, לא צריך Chrome ולא תוסף דפדפן.</textarea>
+
+<textarea id="p-morning-brief" hidden>הקם לי מאפס את הכלי "Morning Brief": סיכום יומי אוטומטי של מה שעשיתי ב-Claude Code, שנשלח אליי כמייל מעוצב בכל בוקר, עם כפתור שמקפיץ אותי בחזרה לכל סשן.
+הקוד פתוח ומלא ב-github.com/Zeev-L/morning-brief — קרא קודם את ה-README, ואז עבוד אוטונומית. עצור רק כשאתה צריך פעולה שלי (אישור OAuth / הרשאת Accessibility).
+
+=== התקנה ===
+1) שכפול + התקנה:
+     git clone https://github.com/Zeev-L/morning-brief ~/.claude/morning-brief
+     cd ~/.claude/morning-brief && ./install.sh
+   install.sh יוצר תיקיות, בונה ורושם את ClaudeJump.app, ומייצר+טוען launchd job יומי (א׳–ה׳ 07:33).
+
+2) EMAIL (חשבון Google שלי, שולח אליי):
+   פתח script.google.com → New project → הדבק את apps-script-mailer.gs מה-repo → Deploy → New deployment → Web app, "Execute as: Me", "Who has access: Anyone" → אשר הרשאות (אני אעבור את מסך ה-OAuth). העתק את כתובת ה-/exec, ואז:
+     echo 'ה-EXEC-URL' > ~/.claude/morning-brief/state/email-webhook.txt
+     echo 'המייל-שלי' > ~/.claude/morning-brief/state/email-to.txt
+
+3) כפתורי "פתח סשן" (Accessibility): אני אעניק הרשאה ל-ClaudeJump.app:
+   System Settings → Privacy & Security → Accessibility → + → ~/Applications/ClaudeJump.app → הפעל.
+
+4) אמת:  ~/.claude/morning-brief/run.sh
+   ודא: נוצר קובץ HTML ב-Desktop/Morning Briefs, נשלח מייל, ובקובץ ה-HTML כפתור "פתח את הסשן" קופץ לסשן הנכון.
+
+הערה: הקפיצה-לסשן עובדת רק כשעובדים באפליקציית הדסקטופ של Claude. בטרמינל בלבד — המייל והסיכום עובדים, בלי הקפיצה.</textarea>
+
+<textarea id="p-helm" hidden>אני רוצה להתקין את "Helm" — אפליקציית ניהול פרויקטים שבנויה על Google Apps Script עם Google Sheets בתור מסד הנתונים. כל קוד המקור והוראות ההתקנה נמצאים ברפו ציבורי.
+
+0. שכפל (clone) את הרפו ופתח את התיקייה כתיקיית העבודה:
+   git clone https://github.com/Zeev-L/helm.git
+   cd helm
+
+בבקשה:
+1. קרא קודם README.md ו-CLAUDE.md כדי להבין את האפליקציה ואת שלבי ההתקנה המדויקים.
+2. הדרך אותי בהתקנה החד-פעמית. תעשה בשבילי כל מה שאתה יכול, וסמן בבירור את השלבים שרק בן-אדם יכול לעשות: יצירת פרויקט Apps Script עצמאי, הרצת setup() פעם אחת, אישור ההרשאות (כולל שליחת מייל), ובחירת רמת הגישה בחלון ה-Deploy.
+3. אם מותקן אצלי clasp — המלץ לדחוף את הקוד מה-CLI; אחרת הדרך אותי בשיטת העתק-הדבק לעורך (Code.gs, Data.gs, Email.gs, וקובץ HTML בשם המדויק "WebApp" שמכיל את WebApp.html, וגם את המניפסט appsscript.json).
+4. אחרי שאריץ setup() ואעשה Deploy — עזור לי לוודא שכתובת ה-web app נטענת.
+
+חשוב: אל תשנה ואל תעשה refactor לשום קוד — רק עזור לי להריץ אותו כמו שהוא. תסביר כל שלב בפשטות, בהנחה שאני לא מומחה ל-Apps Script.</textarea>
+
+<script>
+const GH_USER = "Zeev-L";
+
+const I18N = {
+  en:{ title:"Zeev's Toolbox", subtitle:"Tools I install & my repositories",
+    tabTools:"Tools", tabRepos:"Repositories",
+    toolsLead:"Everything I install on a fresh machine. Each card links to its repo and copies the exact prompt to paste into Claude Code.",
+    reposLead:"All my public GitHub repositories, live from the GitHub API — always up to date.",
+    searchPh:"Search repositories…", sortUpdated:"Recently updated", sortName:"Name (A–Z)", sortStars:"Most stars",
+    copy:"Copy install prompt", copied:"Copied!", repo:"GitHub", steps:"Show install steps",
+    loading:"Loading repositories…", error:"Couldn't reach GitHub (rate limit). Try again in a bit.",
+    noResults:"No repositories match your search.", updated:"Updated", footer:"Built with Claude Code · data pulled live from GitHub", langName:"עברית" },
+  he:{ title:"ארגז הכלים של זאב", subtitle:"הכלים שאני מתקין והריפוז שלי",
+    tabTools:"כלים", tabRepos:"ריפוז",
+    toolsLead:"כל מה שאני מתקין על מחשב חדש. כל כרטיס מקשר לריפו ומעתיק את ה-prompt המדויק להדבקה ב-Claude Code.",
+    reposLead:"כל הריפוז הציבוריים שלי, חי מ-GitHub API — תמיד מעודכן.",
+    searchPh:"חיפוש ריפוז…", sortUpdated:"עודכן לאחרונה", sortName:"שם (א׳–ת׳)", sortStars:"הכי הרבה כוכבים",
+    copy:"העתק prompt התקנה", copied:"הועתק!", repo:"GitHub", steps:"הצג הוראות התקנה",
+    loading:"טוען ריפוז…", error:"לא ניתן להגיע ל-GitHub (מגבלת קצב). נסה שוב בעוד רגע.",
+    noResults:"אין ריפוז שתואמים לחיפוש.", updated:"עודכן", footer:"נבנה עם Claude Code · הנתונים נמשכים חי מ-GitHub", langName:"English" }
+};
+
+const TOOLS = [
+  { id:"claude-config", emoji:"🔄", repo:"claude-config", locked:true,
+    nameEn:"Restore Claude Code Setup", nameHe:"שחזור סביבת Claude Code",
+    descEn:"Restore your entire Claude Code environment on a new machine — global instructions, settings, permissions, skills, and memories — from your source-of-truth repo.",
+    descHe:"משחזר את כל סביבת Claude Code במחשב חדש — הנחיות גלובליות, settings, הרשאות, skills וזיכרונות — מריפו מקור-האמת.",
+    tags:["Claude Code","Any OS"] },
+  { id:"claude-hebrew-support", emoji:"🔤", repo:"claude-hebrew-support",
+    nameEn:"Hebrew RTL Support", nameHe:"תמיכת עברית RTL",
+    descEn:"Fix Hebrew/Arabic right-to-left rendering in Claude Desktop and claude.ai on Chrome (macOS).",
+    descHe:"מסדר תצוגת עברית/ערבית מימין-לשמאל ב-Claude Desktop וב-claude.ai בכרום (macOS).",
+    tags:["macOS","Chrome"] },
+  { id:"the-mic", emoji:"🎙️", repo:"the-mic",
+    nameEn:"The Mic — Task Manager", nameHe:"מיק — מנהל משימות",
+    descEn:"Turns emails and quick entries into a live Google Sheets board — list/board/roadmap views, color-coding, a daily summary email, and add-to-calendar.",
+    descHe:"הופך מיילים והזנות מהירות ללוח חי ב-Google Sheets — תצוגות רשימה/לוח/roadmap, צביעה, מייל סיכום יומי וכפתור הוספה ליומן.",
+    tags:["Google Sheets","Gmail"] },
+  { id:"claude-status-monitor", emoji:"🚦", repo:"claude-status-monitor",
+    nameEn:"Claude Code Status Monitor", nameHe:"רמזור סטטוס עבודה",
+    descEn:"A macOS menu-bar indicator for parallel Claude Code sessions — red = working, orange = waiting, green = done. Click a session to jump to its window.",
+    descHe:"אינדיקטור ב-menu bar של macOS לסשנים מקבילים — אדום=עובד, כתום=ממתין, ירוק=סיים. לחיצה קופצת לחלון הסשן.",
+    tags:["macOS"] },
+  { id:"morning-brief", emoji:"☀️", repo:"morning-brief",
+    nameEn:"Morning Brief", nameHe:"סיכום יומי",
+    descEn:"An automatic morning email summarizing what you did in Claude Code, with a one-click button that jumps back to each session.",
+    descHe:"מייל בוקר אוטומטי שמסכם מה עשית ב-Claude Code, עם כפתור בלחיצה אחת שקופץ בחזרה לכל סשן.",
+    tags:["macOS","Google"] },
+  { id:"helm", emoji:"🧭", repo:"helm",
+    nameEn:"Helm — Project Manager", nameHe:"Helm — ניהול פרויקטים",
+    descEn:"A project-management web app built on Google Apps Script with Google Sheets as the database.",
+    descHe:"אפליקציית ניהול פרויקטים הבנויה על Google Apps Script עם Google Sheets כמסד נתונים.",
+    tags:["Apps Script","Sheets"] }
+];
+
+const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
+  CSS:"#563d7c",Shell:"#89e051",Java:"#b07219",Go:"#00ADD8",Ruby:"#701516",Swift:"#F05138",
+  "C++":"#f34b7d",C:"#555555",Vue:"#41b883",Rust:"#dea584"};
+
+let lang = localStorage.getItem("tb_lang") || "he";
+let theme = localStorage.getItem("tb_theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+let repos = null;
+
+function t(k){ return I18N[lang][k]; }
+
+function applyLang(){
+  const rtl = lang === "he";
+  document.documentElement.lang = lang;
+  document.documentElement.dir = rtl ? "rtl" : "ltr";
+  document.querySelectorAll("[data-i18n]").forEach(el=> el.textContent = t(el.dataset.i18n));
+  document.querySelectorAll("[data-i18n-ph]").forEach(el=> el.placeholder = t(el.dataset.i18nPh));
+  document.getElementById("langLabel").textContent = t("langName");
+  renderTools();
+  if (repos) renderRepos(); else if (repos === null && !document.getElementById("repos").classList.contains("hidden")) {}
+  document.getElementById("toolCount").textContent = TOOLS.length;
+}
+function applyTheme(){
+  document.documentElement.dataset.theme = theme;
+  document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
+}
+
+function renderTools(){
+  const grid = document.getElementById("toolGrid");
+  grid.innerHTML = "";
+  TOOLS.forEach(tool=>{
+    const name = lang==="he"?tool.nameHe:tool.nameEn;
+    const alt  = lang==="he"?tool.nameEn:tool.nameHe;
+    const desc = lang==="he"?tool.descHe:tool.descEn;
+    const card = document.createElement("div");
+    card.className = "card";
+    const tags = tool.tags.map(x=>`<span class="badge">${x}</span>`).join("");
+    const lock = tool.locked ? `<span class="badge lock">🔒 private</span>` : "";
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="emoji">${tool.emoji}</div>
+        <div class="card-title">
+          <h3>${name}</h3>
+          <div class="alt">${alt}</div>
+        </div>
+      </div>
+      <p class="desc">${desc}</p>
+      <div class="badges">${tags}${lock}</div>
+      <div class="card-actions">
+        <a class="btn" href="https://github.com/${GH_USER}/${tool.repo}" target="_blank" rel="noopener">${t("repo")} ↗</a>
+        <button class="btn primary" data-copy="${tool.id}">📋 ${t("copy")}</button>
+      </div>
+      <details class="steps"><summary>${t("steps")}</summary>
+        <pre>${escapeHtml(document.getElementById("p-"+tool.id).value)}</pre>
+      </details>`;
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll("[data-copy]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const txt = document.getElementById("p-"+btn.dataset.copy).value;
+      navigator.clipboard.writeText(txt).then(()=>{
+        const old = btn.innerHTML;
+        btn.innerHTML = "✓ " + t("copied");
+        btn.classList.add("ok");
+        setTimeout(()=>{ btn.innerHTML = old; btn.classList.remove("ok"); }, 1600);
+      });
+    });
+  });
+}
+
+function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function relTime(iso){
+  const d = new Date(iso), now = new Date(), s = (now-d)/1000;
+  const day = 86400;
+  const fmt = (n,uEn,uHe)=> lang==="he" ? `לפני ${n} ${uHe}` : `${n} ${uEn}${n>1?"s":""} ago`;
+  if (s < day) return lang==="he"?"היום":"today";
+  if (s < day*30) return fmt(Math.round(s/day), "day", "ימים");
+  if (s < day*365) return fmt(Math.round(s/(day*30)), "month", "חודשים");
+  return fmt(Math.round(s/(day*365)), "year", "שנים");
+}
+
+async function loadRepos(){
+  const grid = document.getElementById("repoGrid");
+  const state = document.getElementById("repoState");
+  state.classList.add("hidden");
+  grid.innerHTML = Array.from({length:6}).map(()=>`<div class="skel"></div>`).join("");
+  try{
+    const res = await fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&type=owner`);
+    if(!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    repos = data.filter(r=>!r.fork);
+    document.getElementById("repoCount").textContent = repos.length;
+    renderRepos();
+  }catch(e){
+    grid.innerHTML = "";
+    state.textContent = t("error");
+    state.classList.remove("hidden");
+  }
+}
+
+function renderRepos(){
+  if(!repos) return;
+  const grid = document.getElementById("repoGrid");
+  const state = document.getElementById("repoState");
+  const q = document.getElementById("repoSearch").value.trim().toLowerCase();
+  const sort = document.getElementById("repoSort").value;
+  let list = repos.filter(r=> !q || r.name.toLowerCase().includes(q) || (r.description||"").toLowerCase().includes(q));
+  list.sort((a,b)=>{
+    if(sort==="name") return a.name.localeCompare(b.name);
+    if(sort==="stars") return b.stargazers_count - a.stargazers_count;
+    return new Date(b.pushed_at||b.updated_at) - new Date(a.pushed_at||a.updated_at);
+  });
+  state.classList.toggle("hidden", list.length>0);
+  if(!list.length){ grid.innerHTML=""; state.textContent = t("noResults"); return; }
+  grid.innerHTML = list.map(r=>{
+    const color = LANG_COLORS[r.language] || "#8b8b8b";
+    const langHtml = r.language ? `<span class="lang"><span class="dot" style="background:${color}"></span>${r.language}</span>` : "";
+    const star = r.stargazers_count ? `<span>★ ${r.stargazers_count}</span>` : "";
+    return `<div class="repo">
+      <h3><a href="${r.html_url}" target="_blank" rel="noopener">${r.name}</a></h3>
+      <p class="rdesc">${r.description ? escapeHtml(r.description) : "—"}</p>
+      <div class="repo-meta">${langHtml}${star}<span>${t("updated")} ${relTime(r.pushed_at||r.updated_at)}</span></div>
+    </div>`;
+  }).join("");
+}
+
+// tabs
+document.querySelectorAll(".tab").forEach(tab=>{
+  tab.addEventListener("click", ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    tab.classList.add("active");
+    const which = tab.dataset.tab;
+    document.getElementById("tools").classList.toggle("hidden", which!=="tools");
+    document.getElementById("repos").classList.toggle("hidden", which!=="repos");
+    if(which==="repos" && repos===null) loadRepos();
+  });
+});
+
+document.getElementById("langBtn").addEventListener("click", ()=>{
+  lang = lang==="he"?"en":"he"; localStorage.setItem("tb_lang", lang); applyLang();
+});
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  theme = theme==="dark"?"light":"dark"; localStorage.setItem("tb_theme", theme); applyTheme();
+});
+document.getElementById("repoSearch").addEventListener("input", renderRepos);
+document.getElementById("repoSort").addEventListener("change", renderRepos);
+
+applyTheme();
+applyLang();
+</script>
+</body>
+</html>
