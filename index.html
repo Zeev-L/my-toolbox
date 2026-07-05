@@ -280,6 +280,33 @@
 
 חשוב: אל תשנה ואל תעשה refactor לשום קוד — רק עזור לי להריץ אותו כמו שהוא. תסביר כל שלב בפשטות, בהנחה שאני לא מומחה ל-Apps Script.</textarea>
 
+<textarea id="p-mila" hidden>אני רוצה להתקין ולהריץ את "Mila" — אפליקציית macOS מקומית שמקליטה, מכתיבה ומתמללת אודיו ישירות על ה-Mac (שום אודיו לא יוצא מהמחשב). עברית דרך ivrit.ai large-v3, אנגלית דרך Whisper large-v3-turbo, עם זיהוי דוברים אופציונלי. הקוד: github.com/Zeev-L/mila (מראה של island-io/mila, רישיון Apache-2.0).
+
+בבקשה, והסבר לי כל צעד בפשטות (אני לא מתכנת):
+
+1. ודא דרישות מקדימות:
+   - macOS 14 (Sonoma) ומעלה, רצוי Apple Silicon (M-series).
+   - Xcode 15.3+ מותקן (לא רק Command Line Tools).
+   - Homebrew מותקן (משמש להתקנת xcodegen). אם חסר — הסבר מה זה ושאל אותי לפני התקנה.
+   - ~4.6GB פנויים לשני מודלי ה-Whisper שיורדו בהפעלה ראשונה (+~1GB אם מפעילים זיהוי דוברים).
+
+2. שכפל את הריפו ופתח אותו כתיקיית העבודה:
+   git clone https://github.com/Zeev-L/mila.git ~/Desktop/mila
+   cd ~/Desktop/mila
+
+3. קרא קודם את README.md כדי להבין את שלבי הבנייה המדויקים, ואז בנה והרץ:
+   make bootstrap   # פעם אחת: מתקין xcodegen דרך brew אם חסר
+   make run         # מייצר את הפרויקט, בונה ומריץ
+   (הבנייה הראשונה מורידה את whisper.xcframework ~65MB מ-ggml-org/whisper.cpp v1.8.4.)
+
+4. בהפעלה ראשונה האפליקציה מורידה את שני המודלים ברקע (עברית ~3GB, אנגלית ~1.6GB) — ייקח כמה דקות תלוי ברשת.
+
+5. macOS יבקש הרשאות: מיקרופון, ולהקלטת אודיו-מערכת גם Screen Recording (ScreenCaptureKit). תגיד לי מתי לצפות לזה ואני אאשר.
+
+6. קיצורי הכתבה גלובליים: ⌘2 לאנגלית, ⌘3 לעברית (ניתן לשינוי ב-Settings → Hotkeys). בסוף — בדוק איתי שהקלטה ותמלול עובדים בשתי השפות.
+
+הערה: macOS בלבד. אם אני על MacBook Air — מצב real-time מושבת אוטומטית, אבל הקלטה + תמלול בדיעבד עדיין עובדים.</textarea>
+
 <script>
 const GH_USER = "Zeev-L";
 
@@ -332,7 +359,12 @@ const TOOLS = [
     nameEn:"Helm — Project Manager", nameHe:"Helm — ניהול פרויקטים",
     descEn:"A project-management web app built on Google Apps Script with Google Sheets as the database.",
     descHe:"אפליקציית ניהול פרויקטים הבנויה על Google Apps Script עם Google Sheets כמסד נתונים.",
-    tags:["Apps Script","Sheets"] }
+    tags:["Apps Script","Sheets"] },
+  { id:"mila", emoji:"🎧", repo:"mila",
+    nameEn:"Mila — Local Transcription", nameHe:"Mila — תמלול מקומי",
+    descEn:"A native macOS app that records, dictates, and transcribes locally on your Mac — no audio leaves the device. Hebrew via ivrit.ai, English via Whisper large-v3-turbo, with optional speaker diarization.",
+    descHe:"אפליקציית macOS מקומית שמקליטה, מכתיבה ומתמללת ישירות על ה-Mac — שום אודיו לא יוצא מהמחשב. עברית דרך ivrit.ai, אנגלית דרך Whisper large-v3-turbo, עם זיהוי דוברים אופציונלי.",
+    tags:["macOS","Apple Silicon","Whisper"] }
 ];
 
 const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
