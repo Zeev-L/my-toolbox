@@ -344,7 +344,7 @@
    - Credentials → Create Credentials → OAuth client ID → Application type "Desktop app". קבל Client ID + Client Secret.
 9. פתח 📰 → הגדרות… → טאב "יומן", הדבק את ה-Client ID וה-Secret, ולחץ "חבר יומן Google". אשר במסך של Google (אם יש אזהרת "אפליקציה לא מאומתת" → Advanced → המשך אל האפליקציה). בטאב היומן אפשר לבחור אילו יומנים להציג ובאיזה צבע.
 
-בסיום, ציין בפניי שהאפליקציה בנויה על "שורות" (lanes) הניתנות להרחבה — מעבר ליומן ולמבזקים אפשר להוסיף בעתיד שורות נוספות, למשל Slack (הודעות שלא נקראו) או Google Chat. הן עדיין לא מובנות, אבל המבנה תומך בהן (כל שורה היא ספק חדש תחת providers/) — כך שאדע שהאפשרות קיימת אם ארצה.
+בסיום, ציין בפניי שיש גם שורת Slack (הודעות שלא נקראו) — כבויה כברירת מחדל. כדי להפעיל: יוצרים אפליקציית Slack ב-api.slack.com/apps עם User Token Scopes (channels:read groups:read im:read mpim:read channels:history groups:history im:history mpim:history users:read), מתקינים ל-workspace, מדביקים את ה-User OAuth Token (xoxp-) בטאב Slack שבהגדרות, ומדליקים את השורה. (Google Chat אפשרי רק לחשבונות Google Workspace ארגוניים — לא ל-gmail אישי — ולכן לא נכלל.) האפליקציה בנויה על "שורות" (lanes) הניתנות להרחבה: כל שורה היא ספק תחת providers/.
 
 הערות: macOS בלבד. ה-Client Secret וה-refresh token נשמרים רק מקומית (~/Library/Application Support/news-ticker/settings.json) — לא ב-repo. קיצורים: ⌘⌥N מסתיר/מציג את שורת המבזקים, ⌘⌥C את שורת היומן; אפשר גם מהאייקון 📰. גוררים כל שורה מהידית הצבעונית שבקצה.</textarea>
 
