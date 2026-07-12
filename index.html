@@ -307,6 +307,45 @@
 
 הערה: macOS בלבד. אם אני על MacBook Air — מצב real-time מושבת אוטומטית, אבל הקלטה + תמלול בדיעבד עדיין עובדים.</textarea>
 
+<textarea id="p-news-ticker" hidden>אני רוצה להתקין את "News Ticker" — אפליקציית macOS קטנה שמציגה שורות דקות ושקופות בקצה המסך: שורת מבזקי חדשות (RSS מ-ynet, וואלה, ישראל היום, הארץ, גלובס, N12) ושורת יומן Google (פגישות היום מעכשיו והלאה). כל שורה שקופה, לחיצה-מבעד (לחיצות על אזור ריק עוברות למה שמאחור), נגררת, ונשלטת בנפרד (קיצור מקלדת + אייקון 📰 בשורת התפריטים). הקוד ב-repo הפרטי: github.com/Zeev-L/news-ticker
+
+בבקשה התקן, והסבר כל צעד בפשטות (אני לא מתכנת). עצור רק בצעדים שדורשים אותי (אדם) — אישורי OAuth / הרשאות.
+
+=== דרישות מקדימות ===
+1. macOS. ודא ש-Node.js מותקן (node -v, רצוי 18+). אם חסר — התקן עם brew install node (התקן Homebrew קודם אם צריך).
+2. git + gh (GitHub CLI). ה-repo פרטי — אם gh לא מחובר, בקש ממני להריץ `gh auth login` ולהתחבר בדפדפן כ-Zeev-L (או ודא שיש למשתמש הזה גישה ל-repo).
+
+=== התקנה ===
+3. שכפל ופתח כתיקיית העבודה:
+     git clone https://github.com/Zeev-L/news-ticker.git ~/Desktop/news-ticker
+     cd ~/Desktop/news-ticker
+4. קרא קודם את README.md כדי להבין את המבנה (lanes, providers, הגדרות).
+5. התקן תלויות:  npm install
+   - אם Electron לא הותקן עד הסוף (npm חסם את ה-postinstall, או node_modules/electron/dist ריק/חסר "Electron Framework") — הרץ:  node node_modules/electron/install.js
+   - אם עדיין חסר: חלץ ידנית את ה-zip מ-~/Library/Caches/electron/ לתוך node_modules/electron/dist, וודא שהקובץ node_modules/electron/path.txt מכיל בדיוק:  Electron.app/Contents/MacOS/Electron
+6. בנה את האפליקציה **לארכיטקטורה של המחשב הזה** — בדוק עם uname -m:
+   - Apple Silicon (arm64): הרץ electron-packager עם --arch=arm64.
+   - Intel (x86_64): --arch=x64 (זו ברירת המחדל ב-npm run build).
+   הפקודה (התאם <arch>):
+     ./node_modules/.bin/electron-packager . "News Ticker" --platform=darwin --arch=<arch> --out=build --overwrite --app-bundle-id=com.zeev.newsticker --prune=true --ignore="^/build"
+7. הפוך לאפליקציית רקע (בלי אייקון ב-Dock) והתקן ב-/Applications:
+     APP="build/News Ticker-darwin-<arch>/News Ticker.app"
+     /usr/libexec/PlistBuddy -c "Add :LSUIElement bool true" "$APP/Contents/Info.plist"
+     rm -rf "/Applications/News Ticker.app"; cp -R "$APP" /Applications/
+     xattr -dr com.apple.quarantine "/Applications/News Ticker.app"
+     open -a "/Applications/News Ticker.app"
+   ודא שהאייקון 📰 הופיע בשורת התפריטים ושהשורה האדומה (מבזקים) רצה. אם מופיעה אזהרת "מפתח לא מזוהה" — קליק ימני על האפליקציה ב-Finder → Open.
+
+=== יומן Google (אופציונלי, חד-פעמי לכל משתמש) ===
+שורת החדשות עובדת מיד. ליומן צריך חיבור לחשבון Google של המשתמש:
+8. הדרך אותי ליצור הרשאה משלי ב-Google Cloud (console.cloud.google.com) — כל משתמש יוצר משלו:
+   - פרויקט חדש → הפעל "Google Calendar API".
+   - OAuth consent screen: User type External, ואז Publish app → "In production" (מונע ניתוק כל שבוע).
+   - Credentials → Create Credentials → OAuth client ID → Application type "Desktop app". קבל Client ID + Client Secret.
+9. פתח 📰 → הגדרות… → טאב "יומן", הדבק את ה-Client ID וה-Secret, ולחץ "חבר יומן Google". אשר במסך של Google (אם יש אזהרת "אפליקציה לא מאומתת" → Advanced → המשך אל האפליקציה). בטאב היומן אפשר לבחור אילו יומנים להציג ובאיזה צבע.
+
+הערות: macOS בלבד. ה-Client Secret וה-refresh token נשמרים רק מקומית (~/Library/Application Support/news-ticker/settings.json) — לא ב-repo. קיצורים: ⌘⌥N מסתיר/מציג את שורת המבזקים, ⌘⌥C את שורת היומן; אפשר גם מהאייקון 📰. גוררים כל שורה מהידית הצבעונית שבקצה.</textarea>
+
 <script>
 const GH_USER = "Zeev-L";
 
@@ -364,7 +403,12 @@ const TOOLS = [
     nameEn:"Mila — Local Transcription", nameHe:"Mila — תמלול מקומי",
     descEn:"A native macOS app that records, dictates, and transcribes locally on your Mac — no audio leaves the device. Hebrew via ivrit.ai, English via Whisper large-v3-turbo, with optional speaker diarization.",
     descHe:"אפליקציית macOS מקומית שמקליטה, מכתיבה ומתמללת ישירות על ה-Mac — שום אודיו לא יוצא מהמחשב. עברית דרך ivrit.ai, אנגלית דרך Whisper large-v3-turbo, עם זיהוי דוברים אופציונלי.",
-    tags:["macOS","Apple Silicon","Whisper"] }
+    tags:["macOS","Apple Silicon","Whisper"] },
+  { id:"news-ticker", emoji:"📰", repo:"news-ticker", locked:true,
+    nameEn:"News Ticker + Calendar", nameHe:"פס מבזקים ויומן",
+    descEn:"Thin, translucent, click-through menu-bar tickers for macOS: live Israeli news (RSS) and today's Google Calendar meetings from now onward. Each lane is independently styled, colour-coded, draggable, and toggleable.",
+    descHe:"פסים דקים, שקופים ולחיצים-מבעד ל-macOS: מבזקי חדשות ישראליים (RSS) ופגישות Google Calendar של היום מעכשיו והלאה. כל שורה מעוצבת, צבועה, נגררת ונשלטת בנפרד.",
+    tags:["macOS","Electron","Google Calendar"] }
 ];
 
 const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
