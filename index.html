@@ -310,6 +310,21 @@
 
 חשוב: אל תשנה ואל תעשה refactor לשום קוד — רק עזור לי להריץ אותו כמו שהוא. תסביר כל שלב בפשטות, בהנחה שאני לא מומחה ל-Apps Script.</textarea>
 
+<textarea id="p-focus-timer" hidden>אני רוצה להתקין אצלי את "Focus Timer" — דיסק טיימר קטן שצף מעל כל החלונות ב-macOS. קובעים משך זמן, והוא סופר לאחור; כשנגמר הוא קופץ לחזית, מצלצל, וממשיך לספור "מינוס" כדי להראות כמה עברתי את הזמן. הקוד הציבורי: github.com/Zeev-L/focus-timer
+
+בבקשה התקן לי אותו, והסבר כל צעד בפשטות (אני לא מתכנת):
+
+1. קרא קודם את ה-README של הריפו, ואז עקוב אחריו.
+2. ודא ש-Node.js מותקן (node -v). אם חסר — התקן עם brew install node (התקן Homebrew קודם אם צריך; הסבר מה זה ושאל אותי לפני).
+3. שכפל את הריפו לשולחן העבודה והתקן:
+   git clone https://github.com/Zeev-L/focus-timer.git ~/Desktop/focus-timer
+   cd ~/Desktop/focus-timer && npm install
+4. הרץ אותו: npm start. אמור לי לחפש עיגול זכוכית קטן שצף על המסך (מראה 25:00).
+5. הראה לי איך משתמשים: לחיצה על העיגול = התחל/השהה; גרירה = להזיז לכל מקום; ריחוף מעל העיגול → אייקון עיפרון ✎ → הגדרת משך (אפשר להקליד כל מספר דקות), גודל, ושפה (עברית/אנגלית); "שמור" סוגר ומתחיל.
+6. אם אני רוצה אפליקציה בלחיצה-כפולה במקום npm start — הרץ npm run dist ופתח את ה-.app מתוך תיקיית dist.
+
+חשוב: הכול רץ מקומית לגמרי, בלי שום שליחת מידע החוצה. עצור ושאל אותי לפני כל התקנה גלובלית (Homebrew/Node).</textarea>
+
 <textarea id="p-mila" hidden>אני רוצה להתקין ולהריץ את "Mila" — אפליקציית macOS מקומית שמקליטה, מכתיבה ומתמללת אודיו ישירות על ה-Mac (שום אודיו לא יוצא מהמחשב). עברית דרך ivrit.ai large-v3, אנגלית דרך Whisper large-v3-turbo, עם זיהוי דוברים אופציונלי. הקוד: github.com/Zeev-L/mila (מראה של island-io/mila, רישיון Apache-2.0).
 
 בבקשה, והסבר לי כל צעד בפשטות (אני לא מתכנת):
@@ -487,6 +502,11 @@ const TOOLS = [
     descEn:"Thin, translucent, click-through menu-bar tickers for macOS: live Israeli news (RSS) and today's Google Calendar meetings from now onward. Each lane is independently styled, colour-coded, draggable, and toggleable.",
     descHe:"פסים דקים, שקופים ולחיצים-מבעד ל-macOS: מבזקי חדשות ישראליים (RSS) ופגישות Google Calendar של היום מעכשיו והלאה. כל שורה מעוצבת, צבועה, נגררת ונשלטת בנפרד.",
     tags:["macOS","Electron","Google Calendar"] },
+  { id:"focus-timer", emoji:"🍵", repo:"focus-timer",
+    nameEn:"Focus Timer", nameHe:"טיימר פוקוס",
+    descEn:"A small floating always-on-top timer disc for macOS. Set a duration and it counts down with a depleting ring that warms mint → coral; when time's up it jumps to the front, chimes, and counts overtime (+M:SS) so you see how far you've drifted. Hover ✎ to set the time (type any minutes), size, and language.",
+    descHe:"דיסק טיימר קטן שצף מעל כל החלונות ב-macOS. קובעים משך, והוא סופר לאחור עם טבעת שמתרוקנת ומתחממת ממנטה לאלמוג; כשהזמן נגמר הוא קופץ לחזית, מצלצל, וסופר מינוס (+דקות) כדי להראות כמה נסחפת. ריחוף על ✎ לקביעת זמן (אפשר להקליד), גודל ושפה.",
+    tags:["macOS","Electron"] },
   { id:"bridge", emoji:"🚢", repo:"bridge",
     nameEn:"The Bridge — Command Center", nameHe:"הגשר — מרכז שליטה",
     descEn:"My home page (live at zeev-l.github.io/bridge) that ties together everything I run day to day — tools, learning, tasks, and repos. One place to launch it all.",
