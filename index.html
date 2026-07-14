@@ -49,10 +49,16 @@
   .lead{color:var(--muted);font-size:14.5px;margin:0 0 20px}
 
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;
-    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:.18s}
+  .card{position:relative;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;transition:transform .18s,border-color .18s,box-shadow .18s,opacity .18s}
   .card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
-  .card-head{display:flex;gap:12px;align-items:flex-start}
+  .card.dragging{opacity:.4;transform:scale(.98);box-shadow:0 20px 40px rgba(16,24,40,.22)}
+  .drag-handle{position:absolute;top:12px;inset-inline-end:12px;width:26px;height:26px;border-radius:7px;
+    display:grid;place-items:center;color:var(--muted);cursor:grab;opacity:.35;transition:.15s;touch-action:none}
+  .drag-handle:hover{opacity:1;color:var(--accent);background:var(--badge-bg)}
+  .drag-handle:active{cursor:grabbing}
+  .card:hover .drag-handle{opacity:.7}
+  .card-head{display:flex;gap:12px;align-items:flex-start;padding-inline-end:22px}
   .emoji{width:44px;height:44px;border-radius:12px;background:var(--accent-soft);display:grid;place-items:center;
     font-size:22px;flex:none}
   .card-title{min-width:0}
@@ -424,18 +430,18 @@ const GH_USER = "Zeev-L";
 const I18N = {
   en:{ title:"Zeev's Toolbox", subtitle:"Tools I install & my repositories",
     tabTools:"Tools", tabRepos:"Repositories",
-    toolsLead:"Everything I install on a fresh machine. Each card links to its repo and copies the exact prompt to paste into Claude Code.",
+    toolsLead:"Everything I install on a fresh machine. Each card links to its repo and copies the exact prompt to paste into Claude Code. Drag the ⠿ handle to reorder — your layout is saved.",
     reposLead:"All my public GitHub repositories, live from the GitHub API — always up to date.",
     searchPh:"Search repositories…", sortUpdated:"Recently updated", sortName:"Name (A–Z)", sortStars:"Most stars",
-    copy:"Copy install prompt", copied:"Copied!", repo:"GitHub", steps:"Show install steps",
+    copy:"Copy install prompt", copied:"Copied!", repo:"GitHub", steps:"Show install steps", drag:"Drag to reorder",
     loading:"Loading repositories…", error:"Couldn't reach GitHub (rate limit). Try again in a bit.",
     noResults:"No repositories match your search.", updated:"Updated", footer:"Built with Claude Code · data pulled live from GitHub", langName:"עברית" },
   he:{ title:"ארגז הכלים של זאב", subtitle:"הכלים שאני מתקין והריפוז שלי",
     tabTools:"כלים", tabRepos:"ריפוז",
-    toolsLead:"כל מה שאני מתקין על מחשב חדש. כל כרטיס מקשר לריפו ומעתיק את ה-prompt המדויק להדבקה ב-Claude Code.",
+    toolsLead:"כל מה שאני מתקין על מחשב חדש. כל כרטיס מקשר לריפו ומעתיק את ה-prompt המדויק להדבקה ב-Claude Code. גרור את הידית ⠿ כדי לשנות את הסדר — הסידור נשמר.",
     reposLead:"כל הריפוז הציבוריים שלי, חי מ-GitHub API — תמיד מעודכן.",
     searchPh:"חיפוש ריפוז…", sortUpdated:"עודכן לאחרונה", sortName:"שם (א׳–ת׳)", sortStars:"הכי הרבה כוכבים",
-    copy:"העתק prompt התקנה", copied:"הועתק!", repo:"GitHub", steps:"הצג הוראות התקנה",
+    copy:"העתק prompt התקנה", copied:"הועתק!", repo:"GitHub", steps:"הצג הוראות התקנה", drag:"גרור לשינוי הסדר",
     loading:"טוען ריפוז…", error:"לא ניתן להגיע ל-GitHub (מגבלת קצב). נסה שוב בעוד רגע.",
     noResults:"אין ריפוז שתואמים לחיפוש.", updated:"עודכן", footer:"נבנה עם Claude Code · הנתונים נמשכים חי מ-GitHub", langName:"English" }
 };
@@ -524,18 +530,35 @@ function applyTheme(){
   document.getElementById("themeBtn").textContent = theme === "dark" ? "☀️" : "🌙";
 }
 
+function orderedTools(){
+  let order = [];
+  try { order = JSON.parse(localStorage.getItem("tb_tool_order") || "[]"); } catch(e){}
+  const byId = Object.fromEntries(TOOLS.map(x=>[x.id,x]));
+  const out = [];
+  order.forEach(id=>{ if(byId[id]){ out.push(byId[id]); delete byId[id]; } });
+  TOOLS.forEach(x=>{ if(byId[x.id]) out.push(x); });   // new/unsaved cards keep default order at the end
+  return out;
+}
+function saveToolOrder(){
+  localStorage.setItem("tb_tool_order", JSON.stringify([...document.querySelectorAll("#toolGrid .card")].map(c=>c.dataset.id)));
+}
+
 function renderTools(){
   const grid = document.getElementById("toolGrid");
   grid.innerHTML = "";
-  TOOLS.forEach(tool=>{
+  orderedTools().forEach(tool=>{
     const name = lang==="he"?tool.nameHe:tool.nameEn;
     const alt  = lang==="he"?tool.nameEn:tool.nameHe;
     const desc = lang==="he"?tool.descHe:tool.descEn;
     const card = document.createElement("div");
     card.className = "card";
+    card.dataset.id = tool.id;
     const tags = tool.tags.map(x=>`<span class="badge">${x}</span>`).join("");
     const lock = tool.locked ? `<span class="badge lock">🔒 private</span>` : "";
     card.innerHTML = `
+      <span class="drag-handle" draggable="true" title="${t("drag")}" aria-label="${t("drag")}">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="5" cy="3" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg>
+      </span>
       <div class="card-head">
         <div class="emoji">${tool.emoji}</div>
         <div class="card-title">
@@ -565,6 +588,44 @@ function renderTools(){
       });
     });
   });
+  bindToolDnD(grid);
+}
+
+let toolDragEl = null;
+function bindToolDnD(grid){
+  grid.querySelectorAll(".drag-handle").forEach(h=>{
+    h.addEventListener("dragstart", e=>{
+      toolDragEl = h.closest(".card");
+      toolDragEl.classList.add("dragging");
+      e.dataTransfer.effectAllowed = "move";
+      e.dataTransfer.setData("text/plain", toolDragEl.dataset.id);
+      try { e.dataTransfer.setDragImage(toolDragEl, 24, 24); } catch(_){}
+    });
+    h.addEventListener("dragend", ()=>{ if(toolDragEl) toolDragEl.classList.remove("dragging"); toolDragEl=null; saveToolOrder(); });
+  });
+  if(grid._dnd) return;   // attach the grid-level dragover only once
+  grid._dnd = true;
+  grid.addEventListener("dragover", e=>{
+    if(!toolDragEl) return;
+    e.preventDefault();
+    const el = closestCard(grid, e.clientX, e.clientY);
+    if(!el){ grid.appendChild(toolDragEl); return; }
+    const r = el.getBoundingClientRect(), cx = r.left + r.width/2, rtl = document.documentElement.dir==="rtl";
+    let before;
+    if(e.clientY < r.top) before = true;
+    else if(e.clientY > r.bottom) before = false;
+    else before = rtl ? (e.clientX > cx) : (e.clientX < cx);
+    grid.insertBefore(toolDragEl, before ? el : el.nextSibling);
+  });
+}
+function closestCard(grid, x, y){
+  let best = { d:Infinity, el:null };
+  grid.querySelectorAll(".card:not(.dragging)").forEach(el=>{
+    const r = el.getBoundingClientRect();
+    const d = Math.hypot(x-(r.left+r.width/2), y-(r.top+r.height/2));
+    if(d < best.d) best = { d, el };
+  });
+  return best.el;
 }
 
 function escapeHtml(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
