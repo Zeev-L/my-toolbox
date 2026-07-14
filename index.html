@@ -244,12 +244,18 @@
 
 הערה: macOS בלבד, לא צריך Chrome ולא תוסף דפדפן.</textarea>
 
-<textarea id="p-morning-brief" hidden>הקם לי מאפס את הכלי "Morning Brief": סיכום יומי אוטומטי של מה שעשיתי ב-Claude Code, שנשלח אליי כמייל מעוצב בכל בוקר, עם כפתור שמקפיץ אותי בחזרה לכל סשן.
-הקוד פתוח ומלא ב-github.com/Zeev-L/morning-brief — קרא קודם את ה-README, ואז עבוד אוטונומית. עצור רק כשאתה צריך פעולה שלי (אישור OAuth / הרשאת Accessibility).
+<textarea id="p-morning-brief" hidden>הקם לי מאפס את הכלי "Claude Morning Brief": סיכום יומי אוטומטי של מה שעשיתי ב-Claude Code, שנשלח אליי כמייל מעוצב בכל בוקר, עם כפתור שמקפיץ אותי בחזרה לכל סשן.
+הקוד פתוח ומלא ב-github.com/Zeev-L/claude-morning-brief — קרא קודם את ה-README, ואז עבוד אוטונומית. עצור רק כשאתה צריך פעולה שלי (אישור OAuth / הרשאת Accessibility / התחברות ל-CLI).
+
+=== דרישת קדם ===
+0) ה-CLI של claude חייב להיות מותקן ומחובר (זה מה שמייצר את הסיכום; אפליקציית הדסקטופ לבדה לא מספיקה):
+     command -v claude || npm install -g @anthropic-ai/claude-code
+     claude auth status | grep -q '"loggedIn": true' || claude auth login
+   בלי זה כל כרטיס יוצא עם כותרת אבל בלי תוכן. (install.sh בודק את זה ומתריע.)
 
 === התקנה ===
 1) שכפול + התקנה:
-     git clone https://github.com/Zeev-L/morning-brief ~/.claude/morning-brief
+     git clone https://github.com/Zeev-L/claude-morning-brief ~/.claude/morning-brief
      cd ~/.claude/morning-brief && ./install.sh
    install.sh יוצר תיקיות, בונה ורושם את ClaudeJump.app, ומייצר+טוען launchd job יומי (א׳–ה׳ 07:33).
 
@@ -262,7 +268,7 @@
    System Settings → Privacy & Security → Accessibility → + → ~/Applications/ClaudeJump.app → הפעל.
 
 4) אמת:  ~/.claude/morning-brief/run.sh
-   ודא: נוצר קובץ HTML ב-Desktop/Morning Briefs, נשלח מייל, ובקובץ ה-HTML כפתור "פתח את הסשן" קופץ לסשן הנכון.
+   ודא: נוצר קובץ HTML ב-"Desktop/Claude Morning Brief" (כולל latest.html קבוע לסימון כמועדף), נשלח מייל, ובקובץ ה-HTML כפתור "פתח את הסשן" קופץ לסשן הנכון.
 
 הערה: הקפיצה-לסשן עובדת רק כשעובדים באפליקציית הדסקטופ של Claude. בטרמינל בלבד — המייל והסיכום עובדים, בלי הקפיצה.</textarea>
 
@@ -437,8 +443,8 @@ const TOOLS = [
     descEn:"A macOS menu-bar indicator for parallel Claude Code sessions — red = working, orange = waiting, green = done. Click a session to jump to its window.",
     descHe:"אינדיקטור ב-menu bar של macOS לסשנים מקבילים — אדום=עובד, כתום=ממתין, ירוק=סיים. לחיצה קופצת לחלון הסשן.",
     tags:["macOS"] },
-  { id:"morning-brief", emoji:"☀️", repo:"morning-brief",
-    nameEn:"Morning Brief", nameHe:"סיכום יומי",
+  { id:"morning-brief", emoji:"☀️", repo:"claude-morning-brief",
+    nameEn:"Claude Morning Brief", nameHe:"סיכום בוקר",
     descEn:"An automatic morning email summarizing what you did in Claude Code, with a one-click button that jumps back to each session.",
     descHe:"מייל בוקר אוטומטי שמסכם מה עשית ב-Claude Code, עם כפתור בלחיצה אחת שקופץ בחזרה לכל סשן.",
     tags:["macOS","Google"] },
