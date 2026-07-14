@@ -551,7 +551,7 @@ document.querySelectorAll(".tab").forEach(tab=>{
     if(history.replaceState) history.replaceState(null, "", "#"+which);
   });
 });
-if(location.hash==="#repos"){ const rb=document.querySelector('.tab[data-tab="repos"]'); if(rb) rb.click(); }
+if(location.hash==="#repos" || /[?&]tab=repos/.test(location.search)){ const rb=document.querySelector('.tab[data-tab="repos"]'); if(rb) rb.click(); }
 
 document.getElementById("langBtn").addEventListener("click", ()=>{
   lang = lang==="he"?"en":"he"; localStorage.setItem("tb_lang", lang); applyLang();
