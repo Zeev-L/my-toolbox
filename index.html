@@ -548,8 +548,10 @@ document.querySelectorAll(".tab").forEach(tab=>{
     document.getElementById("tools").classList.toggle("hidden", which!=="tools");
     document.getElementById("repos").classList.toggle("hidden", which!=="repos");
     if(which==="repos" && repos===null) loadRepos();
+    if(history.replaceState) history.replaceState(null, "", "#"+which);
   });
 });
+if(location.hash==="#repos"){ const rb=document.querySelector('.tab[data-tab="repos"]'); if(rb) rb.click(); }
 
 document.getElementById("langBtn").addEventListener("click", ()=>{
   lang = lang==="he"?"en":"he"; localStorage.setItem("tb_lang", lang); applyLang();
