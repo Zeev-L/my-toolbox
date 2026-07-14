@@ -363,6 +363,37 @@
 
 הערה: כדי לשנות סדר כרטיסים — גוררים אותם, והסדר נשמר בדפדפן. כדי להוסיף יעד חדש — מוסיפים אובייקט למערך LINKS (ציבורי: url+host; פרטי: private:true + key, בלי כתובת בקוד).</textarea>
 
+<textarea id="p-learning-os" hidden>היי! זה פרומפט להתקנת "Learning OS" — דשבורד למידה אישי שמרכז את התוכן המקצועי הכי טוב
+(AI · Product · R&D/Eng-Ops · אסטרטגיה) לסיכומים קצרים בעברית, עם שורה תחתונה, משמעויות
+והמלצות פרקטיות, בייסליין של בסט-פרקטיסז, וספריית מקורות. תצוגה חיה לדוגמה:
+https://zeev-l.github.io/learning-os/
+
+הדבק אותי ב-Claude Code. בצע אוטונומית, אמת כל שלב בפועל (לא "נראה תקין"), ובסוף דווח
+מה מוכן ומה דורש פעולה ידנית ממני.
+
+## איך זה עובד
+אתר סטטי (HTML) + רענון "דרך Claude": מושך RSS + GitHub Trending ומסכם לעברית — בלי מפתח API.
+
+## התקן לי עותק משלי
+1. בדוק git, node, gh (GitHub CLI). אם חסר — תן פקודת התקנה (macOS: brew) ועצור עד שאתקין.
+2. ודא שאני מחובר ל-GitHub שלי: `gh auth status`; אם לא — הנחה אותי ל-gh auth login (אינטראקטיבי, אני אעשה).
+3. עשה fork לחשבון שלי ושכפל: `gh repo fork Zeev-L/learning-os --clone` (אם כבר קיים — clone/pull).
+4. cd אל התיקייה שנוצרה, והרץ `npm install`.
+5. אמת שהדשבורד עובד: `node scripts/serve.mjs` ואז http://localhost:8005 — ודא 4 טאבים
+   (Digest / בייסליין / מקורות / ארכיון) וכרטיסי Digest נטענים. דווח מה ראית בפועל.
+6. שאל אותי: להתחיל Digest נקי (למחוק את התוכן-לדוגמה של הבעלים ולהשאיר שלד) או להשאיר כנקודת פתיחה.
+7. לרענן: בשיחת Claude Code פשוט אבקש "רענן את ה-Digest". לעדכן את העותק שלי: git add/commit/push.
+
+## אופציונלי (הצע לי)
+- **אתר ציבורי משלי:** GitHub → ה-repo שלי → Settings → Pages → main/root → URL: https://<my-user>.github.io/learning-os/
+- **התאמה אישית:** לערוך data/sources.js (הוסף/הסר מקורות לפי התחומים שלי).
+- **רענון אוטומטי שבועי:** לפי SETUP.md ב-repo (דורש claude CLI; bash scripts/install-schedule.sh).
+
+## סיכום
+דווח טבלה: מה מוכן, ומה דורש פעולה ידנית ממני (gh login / בחירת Digest נקי / Pages).
+
+הערה: רק לצפייה — אפשר לפתוח את הדוגמה בלי שום התקנה: https://zeev-l.github.io/learning-os/</textarea>
+
 <script>
 const GH_USER = "Zeev-L";
 
@@ -430,7 +461,12 @@ const TOOLS = [
     nameEn:"The Bridge — Command Center", nameHe:"הגשר — מרכז שליטה",
     descEn:"My home page (live at zeev-l.github.io/bridge) that ties together everything I run day to day — tools, learning, tasks, and repos. One place to launch it all.",
     descHe:"דף הבית שלי (חי ב-zeev-l.github.io/bridge) שמרכז את כל מה שאני מפעיל ביום-יום — כלים, למידה, משימות וריפוז. מקום אחד להשיק מהכול.",
-    tags:["Web","Any OS"] }
+    tags:["Web","Any OS"] },
+  { id:"learning-os", emoji:"🎓", repo:"learning-os",
+    nameEn:"Learning OS", nameHe:"מערכת הלמידה",
+    descEn:"A personal learning dashboard that curates the best professional content (AI · Product · R&D/Eng-Ops · Strategy) into short Hebrew summaries — bottom line, implications, practical recommendations, a best-practices baseline, and a source library. Static site refreshed “via Claude” (RSS + GitHub Trending, no API key).",
+    descHe:"דשבורד למידה אישי שמרכז את התוכן המקצועי הכי טוב (AI · Product · R&D/Eng-Ops · אסטרטגיה) לסיכומים קצרים בעברית — עם שורה תחתונה, משמעויות והמלצות פרקטיות, בייסליין של בסט-פרקטיסז, וספריית מקורות. אתר סטטי שמתרענן “דרך Claude” (RSS + GitHub Trending, בלי מפתח API).",
+    tags:["Static site","Node","Hebrew"] }
 ];
 
 const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
