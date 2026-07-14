@@ -159,6 +159,24 @@
 </footer>
 
 <!-- Install prompts (raw text, read by JS; nothing escaped) -->
+<textarea id="p-worktime-blocker" hidden>אני רוצה להתקין אצלי את "Worktime Blocker" — תוסף Chrome שחוסם אתרים מסיחים בשעות העבודה, עם דף חסימה שאני מחליט בו אם להמשיך. עקוב אחרי ה-README של github.com/Zeev-L/worktime-blocker.
+
+בבקשה:
+
+1. קרא קודם את ה-README של הריפו, ואז הדרך אותי. הסבר כל צעד בשפה פשוטה.
+
+2. שכפל את הריפו למקום נוח (למשל שולחן העבודה):
+   git clone https://github.com/Zeev-L/worktime-blocker.git ~/Desktop/worktime-blocker
+
+3. את הצעדים הבאים ב-Chrome אני עושה בעצמי — הדרך אותי לחיצה-לחיצה וחכה לי בכל שלב:
+   - לפתוח chrome://extensions
+   - להדליק "Developer mode" (מתג ימני-עליון)
+   - ללחוץ "Load unpacked" ולבחור את התיקייה worktime-blocker
+
+4. אחרי הטעינה: הדרך אותי איך לפתוח את מסך ההגדרות (אייקון הפאזל 🧩 בסרגל → Worktime Blocker) ולקבוע אתרים חסומים, שעות עבודה וימים — ואז לשמור.
+
+חשוב: עצור ושאל אותי לפני כל צעד שדורש ידיים שלי (הגדרות Chrome, טעינת התוסף). הסבר שהתוסף רץ מקומית לגמרי ולא שולח שום מידע החוצה.</textarea>
+
 <textarea id="p-claude-config" hidden>אני מתחיל לעבוד במחשב חדש / חשבון Claude חדש, ורוצה לשחזר את כל סביבת ה-Claude Code שלי.
 מקור האמת שלי הוא ה-repo הפרטי: github.com/Zeev-L/claude-config
 
@@ -472,7 +490,12 @@ const TOOLS = [
     nameEn:"Learning OS", nameHe:"מערכת הלמידה",
     descEn:"A personal learning dashboard that curates the best professional content (AI · Product · R&D/Eng-Ops · Strategy) into short Hebrew summaries — bottom line, implications, practical recommendations, a best-practices baseline, and a source library. Static site refreshed “via Claude” (RSS + GitHub Trending, no API key).",
     descHe:"דשבורד למידה אישי שמרכז את התוכן המקצועי הכי טוב (AI · Product · R&D/Eng-Ops · אסטרטגיה) לסיכומים קצרים בעברית — עם שורה תחתונה, משמעויות והמלצות פרקטיות, בייסליין של בסט-פרקטיסז, וספריית מקורות. אתר סטטי שמתרענן “דרך Claude” (RSS + GitHub Trending, בלי מפתח API).",
-    tags:["Static site","Node","Hebrew"] }
+    tags:["Static site","Node","Hebrew"] },
+  { id:"worktime-blocker", emoji:"✋", repo:"worktime-blocker",
+    nameEn:"Worktime Blocker", nameHe:"חוסם שעות עבודה",
+    descEn:"A Chrome extension that blocks distracting sites during your work hours — a soft, self-controlled block: you reach a block page and decide whether to continue. Includes a settings screen for sites, hours, and days.",
+    descHe:"תוסף Chrome שחוסם אתרים מסיחים בשעות העבודה — חסימה רכה שאתה שולט בה: מגיעים לדף חסימה ומחליטים אם להמשיך. כולל מסך הגדרות לאתרים, שעות וימים.",
+    tags:["Chrome","Any OS"] }
 ];
 
 const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
