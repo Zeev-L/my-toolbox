@@ -348,6 +348,23 @@
 
 הערות: macOS בלבד. ה-Client Secret וה-refresh token נשמרים רק מקומית (~/Library/Application Support/news-ticker/settings.json) — לא ב-repo. קיצורים: ⌘⌥N מסתיר/מציג את שורת המבזקים, ⌘⌥C את שורת היומן; אפשר גם מהאייקון 📰. גוררים כל שורה מהידית הצבעונית שבקצה.</textarea>
 
+<textarea id="p-bridge" hidden>אני רוצה להתקין את "The Bridge / הגשר" — דף הבית המקומי שמרכז את כל מה שאני מפעיל ביום-יום (הכלים, מערכת הלמידה, מיק, Helm, הריפוז). מקור האמת הוא ה-repo הפרטי: github.com/Zeev-L/bridge
+
+בבקשה:
+
+1. ודא ש-git ו-gh (GitHub CLI) מותקנים ושאני מחובר כ-Zeev-L (gh auth status). אם לא — בקש ממני להריץ gh auth login.
+
+2. שכפל את ה-repo הפרטי לנתיב קבוע:
+   git clone https://github.com/Zeev-L/bridge.git ~/Desktop/bridge
+
+3. פתח את הדף:  open ~/Desktop/bridge/index.html
+
+4. הצע לי להגדיר אותו כדף הבית של הדפדפן (file://~/Desktop/bridge/index.html), ותסביר איך בפשטות.
+
+5. חשוב: זה דף מקומי בלבד ומכיל כתובות פרטיות — אל תפרסם אותו ואל תעלה אותו ל-Pages.
+
+הערה: כדי לשנות סדר כרטיסים — גוררים אותם, והסדר נשמר בדפדפן. כדי להוסיף/לעדכן יעד — עורכים את מערך LINKS בקובץ index.html.</textarea>
+
 <script>
 const GH_USER = "Zeev-L";
 
@@ -410,7 +427,12 @@ const TOOLS = [
     nameEn:"News Ticker + Calendar", nameHe:"פס מבזקים ויומן",
     descEn:"Thin, translucent, click-through menu-bar tickers for macOS: live Israeli news (RSS) and today's Google Calendar meetings from now onward. Each lane is independently styled, colour-coded, draggable, and toggleable.",
     descHe:"פסים דקים, שקופים ולחיצים-מבעד ל-macOS: מבזקי חדשות ישראליים (RSS) ופגישות Google Calendar של היום מעכשיו והלאה. כל שורה מעוצבת, צבועה, נגררת ונשלטת בנפרד.",
-    tags:["macOS","Electron","Google Calendar"] }
+    tags:["macOS","Electron","Google Calendar"] },
+  { id:"bridge", emoji:"🚢", repo:"bridge", locked:true,
+    nameEn:"The Bridge — Command Center", nameHe:"הגשר — מרכז שליטה",
+    descEn:"My private local home page that ties together everything I run day to day — tools, learning, tasks, projects, and repos. One place to launch it all.",
+    descHe:"דף הבית המקומי והפרטי שמרכז את כל מה שאני מפעיל ביום-יום — כלים, למידה, משימות, פרויקטים וריפוז. מקום אחד להשיק מהכול.",
+    tags:["Local","Any OS"] }
 ];
 
 const LANG_COLORS = {JavaScript:"#f1e05a",TypeScript:"#3178c6",Python:"#3572A5",HTML:"#e34c26",
