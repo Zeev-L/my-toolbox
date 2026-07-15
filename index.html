@@ -165,6 +165,19 @@
 </footer>
 
 <!-- Install prompts (raw text, read by JS; nothing escaped) -->
+<textarea id="p-retzef" hidden>אני רוצה להתקין אצלי את "רצף" (Retzef) — זיכרון שקט ב-menu bar של macOS למי שקופץ הרבה בין דברים. הוא זוכר ברקע על מה עבדתי (לפי קשב, לא לפי חלונות), מציג לוח עם הקבצים שנגעתי בהם ושורת "הצעד הבא", ועוד קריאת קשב יומית. הכול מקומי, בלי צילומי מסך. הקוד הציבורי: github.com/Zeev-L/retzef
+
+בבקשה התקן לי אותו, והסבר כל צעד בפשטות (אני לא מתכנת):
+
+1. הדרך הכי מהירה: הורד את ה-.dmg מ-github.com/Zeev-L/retzef/releases, פתח, וגרור את Retzef לתיקיית Applications. אם macOS חוסם (אפליקציה לא חתומה) — לחיצה-ימנית על האפליקציה → "Open".
+2. לחלופין מהקוד: ודא ש-Node.js מותקן (node -v; אם חסר — brew install node), ואז:
+   git clone https://github.com/Zeev-L/retzef.git ~/Desktop/retzef
+   cd ~/Desktop/retzef && npm install && npm start
+3. חפש אייקון קטן של טבעת-חוט בשורת התפריטים למעלה; לחיצה פותחת את הלוח.
+4. בפעם הראשונה תן ל-Retzef הרשאות כשיבקש: Accessibility (לקרוא כותרת החלון) ו-Automation (לקרוא את הטאב בדפדפן). בלי זה הוא לא יכול לזכור.
+5. שורת "✦ הצעד הבא" משתמשת ב-claude CLI המקומי אם מותקן — אם לא, הכול עובד חוץ מהשורה הזאת.
+
+חשוב: הכול רץ מקומית לגמרי, בלי צילומי מסך ובלי שליחת מידע החוצה. עצור ושאל אותי לפני כל התקנה גלובלית (Homebrew/Node).</textarea>
 <textarea id="p-worktime-blocker" hidden>אני רוצה להתקין אצלי את "Worktime Blocker" — תוסף Chrome שחוסם אתרים מסיחים בשעות העבודה, עם דף חסימה שאני מחליט בו אם להמשיך. עקוב אחרי ה-README של github.com/Zeev-L/worktime-blocker.
 
 בבקשה:
@@ -478,6 +491,11 @@ const I18N = {
 };
 
 const TOOLS = [
+  { id:"retzef", emoji:"🧵", repo:"retzef",
+    nameEn:"Retzef — Attention Memory", nameHe:"רצף — זיכרון קשב",
+    descEn:"A quiet macOS menu-bar memory for people who switch a lot. It passively remembers your work threads (attention, not windows), shows a pull-only board with the files you touched and an AI \"next step\" line, plus a daily focus read. Local-only, no screenshots.",
+    descHe:"זיכרון שקט ב-menu bar של macOS למי שקופץ הרבה בין דברים. זוכר ברקע את חוטי העבודה שלך (לפי קשב, לא לפי חלונות), מציג לוח שקט עם הקבצים שנגעת בהם ושורת \"הצעד הבא\" מ-AI, ועוד קריאת קשב יומית. הכול מקומי, בלי צילומי מסך.",
+    tags:["macOS","Electron"] },
   { id:"rega", emoji:"🌅", repo:"rega",
     nameEn:"Rega — Work-Confidence Companion", nameHe:"רגע — מלווה ביטחון בעבודה",
     descEn:"A quiet macOS menu-bar companion that nudges you through the workday to pause on your personal vision, a mantra, your strengths, and gratitude — then emails you an automatic evening summary of everything you were grateful for.",
