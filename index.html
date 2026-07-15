@@ -439,6 +439,22 @@ https://zeev-l.github.io/learning-os/
 
 הערה: רק לצפייה — אפשר לפתוח את הדוגמה בלי שום התקנה: https://zeev-l.github.io/learning-os/</textarea>
 
+<textarea id="p-rega" hidden>אני רוצה להתקין אצלי את "רגע" — מלווה שקט ב-menu bar של macOS לחיזוק הביטחון וההצלחה בעבודה. הוא מזכיר לי במהלך היום לעצור לרגע: לקרוא את החזון האישי שלי, מנטרה, התכונות שלי, ולהודות — ובסוף היום שולח לי מייל אוטומטי עם כל מה שהודיתי עליו. הקוד הציבורי: github.com/Zeev-L/rega
+
+בבקשה התקן לי אותו, והסבר כל צעד בפשטות (אני לא מתכנת):
+
+1. קרא קודם את ה-README של הריפו ואת apps-script/README.md, ואז עקוב אחריהם.
+2. ודא ש-Node.js מותקן (node -v); אם חסר — התקן עם brew install node (שאל אותי לפני התקנה גלובלית).
+3. שכפל והתקן:
+   git clone https://github.com/Zeev-L/rega.git ~/Desktop/rega
+   cd ~/Desktop/rega && npm install && npm run icons
+4. הרץ: npm start. האייקון יופיע ב-menu bar (לא ב-Dock). לחיצה → "הצג רגע עכשיו" כדי לראות כל מסך.
+5. פתח "הגדרות ותוכן" ועזור לי למלא: החזון (מה אני נותן לעבודה / מה זה גורם לי / איך אני מרגיש), מנטרות, התכונות שלי, ושאלת ההודיה — וקבע לכל סקשן שעות ונודניק.
+6. חיבור המייל האוטומטי (החלק שדורש אותי): לפי apps-script/README.md — צור פרויקט Apps Script (אם יש clasp, דחוף מה-CLI; אחרת העתק את apps-script/Code.gs), קבע SECRET, עשה Deploy כ-Web app (Execute as: me · Who has access: Anyone), ואשר את ההרשאה ל-Gmail. סמן בבירור את השלבים שרק אני יכול לעשות (אישור ההרשאה, בחירת רמת הגישה ב-Deploy). אחר כך הדבק את ה-URL והסוד ב"הגדרות → חיבור מייל" ולחץ "בדוק שליחה".
+7. אם אני רוצה אפליקציה בלחיצה-כפולה במקום npm start — הרץ npm run dist ופתח את ה-.dmg מתוך dist.
+
+חשוב: הכול רץ מקומית לגמרי, הנתונים נשמרים רק אצלי, ורק המייל הערב עובר דרך ה-Apps Script שלי. אל תעשה refactor — רק עזור להריץ ולהתקין כמו שהוא.</textarea>
+
 <script>
 const GH_USER = "Zeev-L";
 
@@ -462,6 +478,11 @@ const I18N = {
 };
 
 const TOOLS = [
+  { id:"rega", emoji:"🌅", repo:"rega",
+    nameEn:"Rega — Work-Confidence Companion", nameHe:"רגע — מלווה ביטחון בעבודה",
+    descEn:"A quiet macOS menu-bar companion that nudges you through the workday to pause on your personal vision, a mantra, your strengths, and gratitude — then emails you an automatic evening summary of everything you were grateful for.",
+    descHe:"מלווה שקט ב-menu bar של macOS שמזכיר לך במהלך יום העבודה לעצור לרגע — לקרוא את החזון האישי, מנטרה, התכונות שלך, ולהודות — ושולח בסוף היום מייל אוטומטי עם כל מה שהודית עליו.",
+    tags:["macOS","Electron","Apps Script"] },
   { id:"claude-config", emoji:"🔄", repo:"claude-config", locked:true,
     nameEn:"Restore Claude Code Setup", nameHe:"שחזור סביבת Claude Code",
     descEn:"Restore your entire Claude Code environment on a new machine — global instructions, settings, permissions, skills, and memories — from your source-of-truth repo.",
